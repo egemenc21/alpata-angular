@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-auth',
   standalone: true,
   imports: [],
-  template:`<div class="bg-primary">safdsa</div>`,
+  template:`<div class="bg-primary">auth</div>`,
   styleUrl: './auth.component.scss'
 })
 export class AuthComponent {
