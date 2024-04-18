@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { SignInService } from '../services/sign-in.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -20,9 +22,15 @@ import { CommonModule } from '@angular/common';
       class="container-fluid d-flex flex-column justify-content-center align-content-center text-center bg-info "
       style="height: 100vh;"
     >
-      <h3 class="h4 text-center">Already have an account? Please sign in!</h3>
+      <h3 class="h4 text-center font-weight-bolder p-3">
+        Already have an account? Please sign in!
+      </h3>
 
-      <form class="container" [formGroup]="applyForm" (submit)="submitApplication()">
+      <form
+        class="container"
+        [formGroup]="applyForm"
+        (submit)="submitApplication()"
+      >
         <label class="row justify-content-center align-content-center">
           <input
             type="email"
@@ -30,6 +38,7 @@ import { CommonModule } from '@angular/common';
             formControlName="email"
             placeholder="Email"
             class="col-lg-6"
+            required
           />
         </label>
         <label class="row justify-content-center align-content-center ">
@@ -39,6 +48,7 @@ import { CommonModule } from '@angular/common';
             formControlName="password"
             placeholder="Password"
             class="col-lg-6"
+            required
           />
         </label>
         <button
@@ -46,7 +56,7 @@ import { CommonModule } from '@angular/common';
           pRipple
           type="submit"
           label="Sign in"
-          class="p-button-success"
+          class="p-button-success w-50 col-lg-2"
           [raised]="true"
           [rounded]="true"
           severity="success"
@@ -57,20 +67,28 @@ import { CommonModule } from '@angular/common';
   styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent {
+  signInService = inject(SignInService);
   value = 5;
+  
 
   applyForm = new FormGroup({
     email: new FormControl(),
     password: new FormControl(),
+    date: new FormControl(),
   });
 
-  
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
-  constructor() {
-    console.log(this.value);
+  ngOnInit() {
+    const isToken = localStorage.getItem("token");
+    if(isToken) this.router.navigate(['/dashboard']);
   }
 
   submitApplication() {
-    console.log(this.applyForm.value.email, this.applyForm.value.password);
+    const data = this.signInService.signIn(
+      this.applyForm.value.email,
+      this.applyForm.value.password
+    );
+    console.log(data);
   }
 }
