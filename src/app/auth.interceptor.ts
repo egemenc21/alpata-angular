@@ -1,17 +1,10 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-
-  const authToken = 'token';
-
-  // Clone the request and add the authorization header
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${authToken}`
-    }
+  console.log("interceptor tetiklendi")
+  const token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMDg5NmY3ZC1hZjdlLTRmOTAtYjBhYi1kMDA1NGM5ZWZhYWYiLCJlbWFpbCI6ImVnZW1lbmMyMTAyQGdtYWlsLmNvbSIsImV4cCI6MTcxMzUzODQyNiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDA4IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.jqsMnh02vADcIyEyAT_zGdKZfmie6JINfwXz3sG4Em1aJEaIXBaTPKDSmb4JZMXr0rN8dv7z3URM_39xgPOW5w";
+  const reqWithHeader = req.clone({
+    headers: req.headers.set('Authorization', `Bearer ${token}`),
   });
-
-  // Pass the cloned request with the updated header to the next handler
-  return next(authReq);
-
+  return next(reqWithHeader);
 };
