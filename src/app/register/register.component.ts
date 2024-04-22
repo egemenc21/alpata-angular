@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, runInInjectionContext } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, runInInjectionContext } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { AuthService } from '../services/auth.service';
+import { AuthService, RegistrationResponse } from '../services/auth.service';
 import { InputMask, InputMaskModule } from 'primeng/inputmask';
 import {
   FileSelectEvent,
@@ -114,6 +114,12 @@ import {
 })
 export class RegisterComponent {
   authService = inject(AuthService);
+  registrationSucceeded = false;
+  registrationResponse: RegistrationResponse = {
+    succeeded:false,
+    message: ''
+  }
+  constructor(private router: Router,private changeDetectorRef: ChangeDetectorRef) {}
 
   applyForm = new FormGroup({
     name: new FormControl(),
@@ -121,24 +127,40 @@ export class RegisterComponent {
     email: new FormControl(),
     password: new FormControl(),
     phoneNumber: new FormControl(),
-    files: new FormControl(null, [Validators.required]),
+    file: new FormControl(null, [Validators.required]),
   });
+
+  ngDoCheck() {
+    if(this.registrationResponse.succeeded) this.router.navigate(['/dashboard']);
+  }
 
   onUpload($event: FileSelectEvent) {
     console.log($event);
 
     const file = $event.files[0];
     if (file) {
-      this.applyForm.value.files = file;
+      this.applyForm.value.file = file;
     }
 
     console.log(this.applyForm.value);
   }
 
-  submitForm = () => {
-    const data = this.authService.toFormData(this.applyForm.value);
-    this.authService.register(data);
+  submitForm = async () => {
+    try {
+      const data = await this.authService.toFormData(this.applyForm.value);
+      this.authService.register(data).subscribe({
+        next: (res) => {         
+          this.registrationResponse = res  
+          console.log(this.registrationResponse);
+        },
+        error: (err) => {
+          // Handle any errors here
+          console.error(err);
+        },
+      });
+      console.log(this.registrationResponse )
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  constructor(private router: Router) {}
 }

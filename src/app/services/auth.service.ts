@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 interface User {
   id: string;
@@ -27,8 +28,8 @@ export interface JwtUser {
   token: string;
 }
 
-interface Response {
-  succeed: boolean;
+export interface RegistrationResponse {
+  succeeded: boolean;
   message: string;
 }
 
@@ -62,16 +63,14 @@ export class AuthService {
     return this.jwtToken;
   }
 
-  async register(registerData: FormData) {
-    this.httpClient
-      .post<Response>(`${this.url}/api/User/register`, registerData)
-      .subscribe({
-        next: (res) => console.log(res),
-        error: (err) => console.log(err),
-      });
+  register(registerData: FormData): Observable<RegistrationResponse> {
+    return this.httpClient.post<RegistrationResponse>(
+      `${this.url}/api/User/register`,
+      registerData
+    );
   }
 
-  toFormData<T>(formValue: T) {
+  async toFormData<T>(formValue: T) {
     const formData = new FormData();
 
     for (const key of Object.keys(formValue)) {
