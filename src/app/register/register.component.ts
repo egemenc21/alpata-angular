@@ -131,6 +131,7 @@ export class RegisterComponent {
   });
 
   ngDoCheck() {
+    console.log(this.authService.getAuthToken())
     if(this.registrationResponse.succeeded) this.router.navigate(['/dashboard']);
   }
 
@@ -154,7 +155,6 @@ export class RegisterComponent {
           console.log(this.registrationResponse);
         },
         error: (err) => {
-          // Handle any errors here
           console.error(err);
         },
       });

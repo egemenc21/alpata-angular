@@ -80,21 +80,29 @@ export class SignInComponent {
     date: new FormControl(),
   });
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     const isToken = localStorage.getItem('token');
     if (isToken) this.router.navigate(['/dashboard']);
   }
 
+  ngDoCheck() {
+    console.log(this.authService.getAuthToken());
+    if (this.authService.getAuthToken()) this.router.navigate(['/dashboard']);
+  }
+
   async submitApplication() {
     try {
-      const data = await this.authService.signIn(
-        this.applyForm.value.email,
-        this.applyForm.value.password
-      );
-
-      if (data) this.router.navigate(['/dashboard']);
+      this.authService
+        .signIn(this.applyForm.value.email, this.applyForm.value.password)
+        .subscribe({
+          next: (res) => {
+            this.authService.setAuthToken(res.token);
+            localStorage.setItem('token', res.token);
+          },
+          error: (err) => console.log(err),
+        });
     } catch (error) {
       console.log(error);
     }

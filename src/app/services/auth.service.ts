@@ -37,30 +37,24 @@ export interface RegistrationResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private jwtToken;
   private readonly url = 'http://localhost:5008';
 
+  private jwtToken;
   constructor(private httpClient: HttpClient) {}
 
   getAuthToken(): string {
     return this.jwtToken;
   }
 
-  async signIn(email: string, password: string) {
-    this.httpClient
-      .post<JwtUser>(`${this.url}/api/User/login`, {
-        email,
-        password,
-      })
-      .subscribe({
-        next: (res) => {
-          this.jwtToken = res.token;
-          localStorage.setItem('token', res.token);
-        },
-        error: (err) => console.log(err),
-      });
+  public setAuthToken(value: string): void {
+    this.jwtToken = value;
+  }
 
-    return this.jwtToken;
+  signIn(email: string, password: string): Observable<JwtUser> {
+    return this.httpClient.post<JwtUser>(`${this.url}/api/User/login`, {
+      email,
+      password,
+    });
   }
 
   register(registerData: FormData): Observable<RegistrationResponse> {
