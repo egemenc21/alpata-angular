@@ -12,10 +12,24 @@ interface User {
   profilePictureUrl: string;
 }
 
+interface UserRegister {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  files: File;
+}
+
 export interface JwtUser {
   id: string;
   email: string;
   token: string;
+}
+
+interface Response {
+  succeed: boolean;
+  message: string;
 }
 
 @Injectable({
@@ -46,5 +60,25 @@ export class AuthService {
       });
 
     return this.jwtToken;
+  }
+
+  async register(registerData: FormData) {
+    this.httpClient
+      .post<Response>(`${this.url}/api/User/register`, registerData)
+      .subscribe({
+        next: (res) => console.log(res),
+        error: (err) => console.log(err),
+      });
+  }
+
+  toFormData<T>(formValue: T) {
+    const formData = new FormData();
+
+    for (const key of Object.keys(formValue)) {
+      const value = formValue[key];
+      formData.append(key, value);
+    }
+
+    return formData;
   }
 }

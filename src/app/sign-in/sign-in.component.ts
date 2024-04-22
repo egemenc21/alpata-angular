@@ -5,7 +5,6 @@ import { PasswordModule } from 'primeng/password';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 FormsModule;
 import { CommonModule } from '@angular/common';
-import { JwtUser, SignInService } from '../services/sign-in.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CustomPipe } from '../pipes/custom.pipe';
@@ -73,9 +72,7 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent {
-  @Input() params: string;
   authService = inject(AuthService);
-  value = 5;
 
   applyForm = new FormGroup({
     email: new FormControl(),
