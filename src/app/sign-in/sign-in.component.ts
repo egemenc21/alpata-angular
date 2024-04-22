@@ -5,12 +5,11 @@ import { PasswordModule } from 'primeng/password';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 FormsModule;
 import { CommonModule } from '@angular/common';
-import { SignInService } from '../services/sign-in.service';
+import { JwtUser, SignInService } from '../services/sign-in.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CustomIfDirective } from '../directives/custom-if.directive';
-import { CustomForDirective } from '../directives/custom-for.directive';
 import { CustomPipe } from '../pipes/custom.pipe';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -22,7 +21,7 @@ import { CustomPipe } from '../pipes/custom.pipe';
     InputTextModule,
     PasswordModule,
     FormsModule,
-CustomPipe
+    CustomPipe,
   ],
   template: `
     <section
@@ -69,17 +68,14 @@ CustomPipe
           severity="success"
         ></button>
       </form>
-    
     </section>
   `,
   styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent {
   @Input() params: string;
-  signInService = inject(SignInService);
+  authService = inject(AuthService);
   value = 5;
-  
-
 
   applyForm = new FormGroup({
     email: new FormControl(),
@@ -92,14 +88,18 @@ export class SignInComponent {
   ngOnInit() {
     const isToken = localStorage.getItem('token');
     if (isToken) this.router.navigate(['/dashboard']);
-    console.log('ng on init');
   }
 
-  submitApplication() {
-    const data = this.signInService.signIn(
-      this.applyForm.value.email,
-      this.applyForm.value.password
-    );
-    console.log(data);
+  async submitApplication() {
+    try {
+      const data = await this.authService.signIn(
+        this.applyForm.value.email,
+        this.applyForm.value.password
+      );
+
+      if (data) this.router.navigate(['/dashboard']);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
