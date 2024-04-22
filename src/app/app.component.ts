@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, DEFAULT_CURRENCY_CODE } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 
@@ -10,17 +9,21 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   imports: [RouterOutlet, RouterLinkActive, RouterLink],
   template: `
     <main class=" " style="height: 100vh;">
-      <section>
+      <section> 
+
         <!-- The routed views render in the <router-outlet>-->
         <router-outlet></router-outlet>
+   
       </section>
 
     </main>
   `,
   styleUrl: './app.component.scss',
+  providers:[{provide: DEFAULT_CURRENCY_CODE, useValue: 'TL'}]
 })
 export class AppComponent {
   title = 'client';
+
 }
 
 // //

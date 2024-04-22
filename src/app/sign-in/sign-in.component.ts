@@ -1,11 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+FormsModule;
 import { CommonModule } from '@angular/common';
 import { SignInService } from '../services/sign-in.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CustomIfDirective } from '../directives/custom-if.directive';
+import { CustomForDirective } from '../directives/custom-for.directive';
+import { CustomPipe } from '../pipes/custom.pipe';
 
 @Component({
   selector: 'app-sign-in',
@@ -16,6 +21,8 @@ import { ActivatedRoute, Router } from '@angular/router';
     ButtonModule,
     InputTextModule,
     PasswordModule,
+    FormsModule,
+CustomPipe
   ],
   template: `
     <section
@@ -62,14 +69,17 @@ import { ActivatedRoute, Router } from '@angular/router';
           severity="success"
         ></button>
       </form>
+    
     </section>
   `,
   styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent {
+  @Input() params: string;
   signInService = inject(SignInService);
   value = 5;
   
+
 
   applyForm = new FormGroup({
     email: new FormControl(),
@@ -80,8 +90,9 @@ export class SignInComponent {
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    const isToken = localStorage.getItem("token");
-    if(isToken) this.router.navigate(['/dashboard']);
+    const isToken = localStorage.getItem('token');
+    if (isToken) this.router.navigate(['/dashboard']);
+    console.log('ng on init');
   }
 
   submitApplication() {

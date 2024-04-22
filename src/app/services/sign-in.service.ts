@@ -21,18 +21,16 @@ export class SignInService {
 
   constructor(private httpClient: HttpClient) {}
 
-  token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMDg5NmY3ZC1hZjdlLTRmOTAtYjBhYi1kMDA1NGM5ZWZhYWYiLCJlbWFpbCI6ImVnZW1lbmMyMTAyQGdtYWlsLmNvbSIsImV4cCI6MTcxMzUzNjkxMSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDA4IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.OAO4eRxWdBFknrwygjpTXRXhjqNgBz0W2pAT0DouWWQzyP8bjG37jXOQanU1JsBRL0QeJnDuUglhNIxUMA7jqw";
-
   async signIn(email: string, password: string): Promise<User[]> {
     let users: User[] = [];
 
     // const params = new HttpParams().set('id', 1);
     // const params2 = new HttpParams({fromObject: {id :1, sort: "asc"}})
-    const headers = new HttpHeaders()
-    .set("Authorization", `Bearer ${this.token}`)
-    .set("accept", "/")
+    // const headers = new HttpHeaders()
+    // .set("Authorization", `Bearer ${this.token}`)
+    // .set("accept", "/")
 
-    this.httpClient.get<User[]>(`${this.url}/api/User`, { headers: headers }).subscribe({
+    this.httpClient.get<User[]>(`${this.url}/api/User`).subscribe({
       next: (data) => (users = data),
       error: (error) => console.log(error),
     });
