@@ -61,6 +61,7 @@ export class HomeComponent {
     }
 
     this.authService.setAuthToken(token);
+    this.userService.userId = userId;
     this.fetchUserById(userId);
   }
 
