@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CustomPipe } from '../pipes/custom.pipe';
 import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -73,6 +74,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class SignInComponent {
   authService = inject(AuthService);
+  userService = inject(UserService);
 
   applyForm = new FormGroup({
     email: new FormControl(),
@@ -99,6 +101,7 @@ export class SignInComponent {
         .subscribe({
           next: (res) => {
             this.authService.setAuthToken(res.token);
+            this.userService.userId = res.id;
             localStorage.setItem('token', res.token);
           },
           error: (err) => console.log(err),
