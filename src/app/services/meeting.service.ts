@@ -15,11 +15,20 @@ export interface Meeting {
   providedIn: 'root',
 })
 export class MeetingService {
+  meetings: Meeting[]
   constructor(private httpClient: HttpClient) {}
 
   fetchMeetingsByUserId(id: string): Observable<Meeting[]> {
     return this.httpClient.get<Meeting[]>(
       `${environment.apiRoute}/api/Meeting/User/${id}`
     );
+  }
+
+  deleteMeeting(meetingId:string){
+    return this.httpClient.delete(`${environment.apiRoute}/api/Meeting/${meetingId}`)
+  }
+
+  updateMeetings(updatedMeetings: Meeting[]) {
+    this.meetings = updatedMeetings;
   }
 }
