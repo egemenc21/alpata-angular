@@ -18,9 +18,14 @@ export class MeetingService {
   meetings: Meeting[];
   constructor(private httpClient: HttpClient) {}
 
-  fetchMeetingsByUserId(id: string): Observable<Meeting[]> {
+  fetchMeetingsByUserId(userId: string): Observable<Meeting[]> {
     return this.httpClient.get<Meeting[]>(
-      `${environment.apiRoute}/api/Meeting/User/${id}`
+      `${environment.apiRoute}/api/Meeting/User/${userId}`
+    );
+  }
+  fetchMeetingById(meetingId: string): Observable<Meeting> {
+    return this.httpClient.get<Meeting>(
+      `${environment.apiRoute}/api/Meeting/${meetingId}`
     );
   }
 
@@ -30,18 +35,24 @@ export class MeetingService {
     );
   }
 
-  updateMeetings(updatedMeetings: Meeting[]) {
-    this.meetings = updatedMeetings;
-  }
+  updateMeeting(meetingToBeUpdated:FormData, meetingId:string){
+    return this.httpClient.put(`${environment.apiRoute}/api/Meeting/${meetingId}`, meetingToBeUpdated)
+  } 
 
-   createMeeting(newMeeting: FormData, userId: string): Observable<HttpResponse<string>> {
-
+  createMeeting(
+    newMeeting: FormData,
+    userId: string
+  ): Observable<HttpResponse<string>> {
     const params = new HttpParams().set('userId', userId);
     return this.httpClient.post<HttpResponse<string>>(
       `${environment.apiRoute}/api/Meeting/`,
       newMeeting,
       { params }
     );
+  }
+
+  updateMeetings(updatedMeetings: Meeting[]) {
+    this.meetings = updatedMeetings;
   }
 
   async toFormData<T>(formValue: T) {
@@ -54,4 +65,5 @@ export class MeetingService {
 
     return formData;
   }
+
 }

@@ -3,11 +3,12 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Meeting, MeetingService } from '../services/meeting.service';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../environments/environment.development';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-meeting-item',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, RouterLink],
   template: `<li
     *ngIf="meeting"
     class="border p-4 rounded-lg d-flex flex-column align-items-center h-100 w-100 "
@@ -26,11 +27,27 @@ import { environment } from '../../environments/environment.development';
       </div>
       <div>
         <span class="text-danger ">Document Url:</span>
-        <a href="{{ this.documentHref }}" target="_blank" class="overflow-hidden">
+        <a
+          href="{{ this.documentHref }}"
+          target="_blank"
+          class="overflow-hidden"
+        >
           {{ meeting.documentUrl }}</a
         >
       </div>
     </div>
+
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Modify"
+      class="p-button-success w-50"
+      [raised]="true"
+      [rounded]="true"
+      severity="success"
+      routerLink="/dashboard/modify/{{ this.meeting.id }}"
+    ></button>
 
     <button
       pButton

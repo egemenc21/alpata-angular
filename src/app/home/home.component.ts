@@ -12,18 +12,25 @@ import { MeetingComponent } from '../meeting/meeting.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ImageModule, NavigationComponent,MeetingComponent,RouterOutlet],
+  imports: [
+    CommonModule,
+    ImageModule,
+    NavigationComponent,
+    MeetingComponent,
+    RouterOutlet,
+  ],
   template: `
     <app-navigation [user]="user" [imageUrl]="imageUrl"></app-navigation>
+    <section>
+      <router-outlet></router-outlet>
+    </section>
     <div>
-      <!-- <ul>
+      <ul>
         <li *ngFor="let key of getObjectKeys(user)">
           <strong>{{ key }}:</strong> {{ user[key] }}
         </li>
-      </ul> -->
-      <!-- <app-meeting></app-meeting> -->
+      </ul>
     </div>
-    <router-outlet></router-outlet>
   `,
   styleUrl: './home.component.scss',
 })
