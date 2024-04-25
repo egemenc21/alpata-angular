@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Meeting {
@@ -34,10 +34,10 @@ export class MeetingService {
     this.meetings = updatedMeetings;
   }
 
-   createMeeting(newMeeting: FormData, userId: string): Observable<string>{
+   createMeeting(newMeeting: FormData, userId: string): Observable<HttpResponse<string>> {
 
     const params = new HttpParams().set('userId', userId);
-    return this.httpClient.post<string>(
+    return this.httpClient.post<HttpResponse<string>>(
       `${environment.apiRoute}/api/Meeting/`,
       newMeeting,
       { params }

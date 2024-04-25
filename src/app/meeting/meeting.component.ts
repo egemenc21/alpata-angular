@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, ViewChild, viewChild } from '@angular/core';
 import { MeetingItemComponent } from '../meeting-item/meeting-item.component';
 import { Meeting, MeetingService } from '../services/meeting.service';
 import { UserService } from '../services/user.service';
@@ -72,13 +72,13 @@ import { CalendarModule } from 'primeng/calendar';
 
         <label class="row ">
           <p-fileUpload
-            mode="basic"
-            chooseLabel="Choose"
             name="demo[]"
+            (onSelect)="onSelect($event)"
             accept=".pdf"
             maxFileSize="1000000"
-            (onSelect)="onSelect($event)"
-          ></p-fileUpload>
+            mode="advanced"
+          >
+          </p-fileUpload>
         </label>
 
         <button
@@ -106,10 +106,12 @@ import { CalendarModule } from 'primeng/calendar';
   styleUrl: './meeting.component.scss',
 })
 export class MeetingComponent {
+  @ViewChild('upload') fileUploadButton;
   meetingService = inject(MeetingService);
   userService = inject(UserService);
   datePipe = inject(DatePipe);
   meetings: Meeting[];
+
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     startDate: new FormControl('', Validators.required),
@@ -119,16 +121,7 @@ export class MeetingComponent {
   });
 
   ngOnInit() {
-    this.meetingService
-      .fetchMeetingsByUserId(this.userService.userId)
-      .subscribe({
-        next: (res) => {
-          console.log(res);
-          this.meetings = res;
-          this.meetingService.meetings = res;
-        },
-        error: (err) => console.log(err),
-      });
+    this.fetchMeetings();
   }
 
   onMeetingDeleted(meetingId: string) {
@@ -163,10 +156,41 @@ export class MeetingComponent {
       'yyyy-MM-dd HH:mm:ss.SSSSSS ZZZZZ'
     );
     const formData = await this.meetingService.toFormData(formValue);
-    this.meetingService.createMeeting(formData, this.userService.userId).subscribe({
-      next: res => console.log(res),
-      error: err => console.log(err)
-    })
-    console.log(this.form.value);
+
+    this.meetingService
+      .createMeeting(formData, this.userService.userId)
+      .subscribe({
+        next: (res) => {
+          console.log('Meeting created successfully:', res);
+          this.fetchMeetings();
+        },
+        error: (err) => {
+          console.error('Error creating meeting:', err);
+          if (err.status === 422) {
+            const validationErrors = err.error;
+            // Iterate over the validationErrors object and display each error message
+            Object.keys(validationErrors).forEach((key) => {
+              const errorMessage = validationErrors[key];
+              console.error(`Validation error for ${key}: ${errorMessage}`);
+              // You can display the error messages to the user here
+            });
+          }
+          // Handle other errors
+        },
+      });
+    this.form.reset();
+    this.fileUploadButton.clear();
+  }
+
+  fetchMeetings() {
+    this.meetingService
+      .fetchMeetingsByUserId(this.userService.userId)
+      .subscribe({
+        next: (res) => {
+          this.meetings = res;
+          this.meetingService.meetings = res;
+        },
+        error: (err) => console.log(err),
+      });
   }
 }
