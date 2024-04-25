@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Meeting {
-  id: string;
+  id?: string;
   name: string;
   startDate: string;
   endDate: string;
@@ -15,7 +15,7 @@ export interface Meeting {
   providedIn: 'root',
 })
 export class MeetingService {
-  meetings: Meeting[]
+  meetings: Meeting[];
   constructor(private httpClient: HttpClient) {}
 
   fetchMeetingsByUserId(id: string): Observable<Meeting[]> {
@@ -24,11 +24,34 @@ export class MeetingService {
     );
   }
 
-  deleteMeeting(meetingId:string){
-    return this.httpClient.delete(`${environment.apiRoute}/api/Meeting/${meetingId}`)
+  deleteMeeting(meetingId: string) {
+    return this.httpClient.delete(
+      `${environment.apiRoute}/api/Meeting/${meetingId}`
+    );
   }
 
   updateMeetings(updatedMeetings: Meeting[]) {
     this.meetings = updatedMeetings;
+  }
+
+   createMeeting(newMeeting: FormData, userId: string): Observable<string>{
+
+    const params = new HttpParams().set('userId', userId);
+    return this.httpClient.post<string>(
+      `${environment.apiRoute}/api/Meeting/`,
+      newMeeting,
+      { params }
+    );
+  }
+
+  async toFormData<T>(formValue: T) {
+    const formData = new FormData();
+
+    for (const key of Object.keys(formValue)) {
+      const value = formValue[key];
+      formData.append(key, value);
+    }
+
+    return formData;
   }
 }

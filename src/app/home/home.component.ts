@@ -65,11 +65,6 @@ export class HomeComponent {
     this.fetchUserById(userId);
   }
 
-  ngDoCheck() {
-    console.log(this.user);
-    console.log(this.imageUrl);
-  }
-
   private getUserIdFromToken(token: string): string | null {
     try {
       const decodedToken = jwtDecode(token);

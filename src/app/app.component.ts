@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, DEFAULT_CURRENCY_CODE } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
@@ -18,7 +19,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     </main>
   `,
   styleUrl: './app.component.scss',
-  providers:[{provide: DEFAULT_CURRENCY_CODE, useValue: 'TL'}]
+  providers:[{provide: DEFAULT_CURRENCY_CODE, useValue: 'TL'}, DatePipe]
 })
 export class AppComponent {
   title = 'client';
