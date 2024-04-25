@@ -2,7 +2,7 @@ import { Component, inject, Input } from '@angular/core';
 import { AuthService, User } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { jwtDecode } from 'jwt-decode';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment.development';
 import { ImageModule } from 'primeng/image';
@@ -12,17 +12,18 @@ import { MeetingComponent } from '../meeting/meeting.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ImageModule, NavigationComponent,MeetingComponent],
+  imports: [CommonModule, ImageModule, NavigationComponent,MeetingComponent,RouterOutlet],
   template: `
     <app-navigation [user]="user" [imageUrl]="imageUrl"></app-navigation>
     <div>
-      <ul>
+      <!-- <ul>
         <li *ngFor="let key of getObjectKeys(user)">
           <strong>{{ key }}:</strong> {{ user[key] }}
         </li>
-      </ul>
-      <app-meeting></app-meeting>
+      </ul> -->
+      <!-- <app-meeting></app-meeting> -->
     </div>
+    <router-outlet></router-outlet>
   `,
   styleUrl: './home.component.scss',
 })
