@@ -99,6 +99,7 @@ export class ModifyMeetingComponent {
   meetingId: string;
 
   form = new FormGroup({
+    id: new FormControl(''),
     name: new FormControl('', Validators.required),
     startDate: new FormControl(null, Validators.required),
     endDate: new FormControl(null, Validators.required),
@@ -113,6 +114,7 @@ export class ModifyMeetingComponent {
         console.log(res);
 
         this.form.patchValue({
+          id: this.meetingId,
           name: res.name,
           startDate: res.startDate ? new Date(res.startDate) : null,
           endDate: res.startDate ? new Date(res.startDate) : null,
@@ -141,6 +143,8 @@ export class ModifyMeetingComponent {
     );
     const formDataToBeUpdated = await this.meetingService.toFormData(formValue);
 
+    console.log(formDataToBeUpdated)
+
     this.meetingService
       .updateMeeting(formDataToBeUpdated, this.meetingId)
       .subscribe({
@@ -148,7 +152,18 @@ export class ModifyMeetingComponent {
           console.log(res);
           this.router.navigate(['dashboard'])
         },
-        error: (err) => console.error(err),
+        error: (err) => {
+          console.error('Error creating meeting:', err);
+          if (err.status === 400) {
+            const validationErrors = err.error;
+            // Iterate over the validationErrors object and display each error message
+            Object.keys(validationErrors).forEach((key) => {
+              const errorMessage = validationErrors[key];
+              console.error(`Validation error for ${key}: ${errorMessage}`);
+              // You can display the error messages to the user here
+            });
+          }
+        },
       });
   }
 }
