@@ -31,7 +31,7 @@ import { CalendarModule } from 'primeng/calendar';
   template: `
     <section>
       <form
-        class="container d-flex flex-column justify-content-center  align-items-center "
+        class="container d-flex flex-column justify-content-center align-items-center"
         [formGroup]="form"
         (submit)="onSubmit()"
       >
@@ -86,18 +86,19 @@ import { CalendarModule } from 'primeng/calendar';
           pRipple
           type="submit"
           label="Create Meeting"
-          class="row justify-content-center  align-content-center  p-button-success w-50 col-lg-2"
+          class="row justify-content-center align-content-center  p-button-success w-50 col-lg-2"
           [raised]="true"
           [rounded]="true"
           severity="success"
         ></button>
       </form>
 
-      <ul class="container d-flex flex-wrap  ">
+      <ul class="container d-flex flex-row flex-wrap  mt-4">
         @if (meetings) { @for (meeting of meetings; track meeting.id) {
         <app-meeting-item
           [meeting]="meeting"
           (meetingDeleted)="onMeetingDeleted($event)"
+          class="col-md-6 col-lg-4 my-2 "
         ></app-meeting-item>
         } }
       </ul>
@@ -128,11 +129,6 @@ export class MeetingComponent {
     this.meetings = this.meetings.filter((meeting) => meeting.id !== meetingId);
     this.meetingService.updateMeetings(this.meetings);
   }
-
-  // ngDoCheck() {
-  //   console.log(this.meetingService.meetings);
-  //   console.log(this.meetings);
-  // }
 
   onSelect($event: FileSelectEvent) {
     console.log($event);
