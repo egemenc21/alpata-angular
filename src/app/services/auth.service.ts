@@ -46,7 +46,7 @@ export class AuthService {
     return this.jwtToken;
   }
 
-  public setAuthToken(value: string): void {
+  public setAuthToken(value: string | null): void {
     this.jwtToken = value;
   }
 

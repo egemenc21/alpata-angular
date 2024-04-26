@@ -30,6 +30,7 @@ import { CalendarModule } from 'primeng/calendar';
   ],
   template: `
     <section>
+      <h1 class="h3 text-center mt-4">Create A Meeting</h1>
       <form
         class="container d-flex flex-column justify-content-center align-items-center"
         [formGroup]="form"
@@ -77,6 +78,7 @@ import { CalendarModule } from 'primeng/calendar';
             accept=".pdf"
             maxFileSize="1000000"
             mode="advanced"
+            #upload
           >
           </p-fileUpload>
         </label>
@@ -183,8 +185,8 @@ export class MeetingComponent {
       .fetchMeetingsByUserId(this.userService.userId)
       .subscribe({
         next: (res) => {
-          this.meetings = res;
-          this.meetingService.meetings = res;
+          this.meetings = res.sort(m => parseInt(m.id) );
+          this.meetingService.meetings = res.sort(m => parseInt(m.id) );
         },
         error: (err) => console.log(err),
       });

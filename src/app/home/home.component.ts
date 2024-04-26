@@ -24,13 +24,13 @@ import { MeetingComponent } from '../meeting/meeting.component';
     <section>
       <router-outlet></router-outlet>
     </section>
-    <div>
+    <!-- <div>
       <ul>
         <li *ngFor="let key of getObjectKeys(user)">
           <strong>{{ key }}:</strong> {{ user[key] }}
         </li>
       </ul>
-    </div>
+    </div> -->
   `,
   styleUrl: './home.component.scss',
 })

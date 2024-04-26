@@ -4,6 +4,7 @@ import { Meeting, MeetingService } from '../services/meeting.service';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../environments/environment.development';
 import { RouterLink } from '@angular/router';
+import { PrimeIcons } from 'primeng/api';
 
 @Component({
   selector: 'app-meeting-item',
@@ -25,43 +26,52 @@ import { RouterLink } from '@angular/router';
       <div>
         <span class="text-danger ">End Date:</span> {{ meeting.endDate | date }}
       </div>
-      <div>
+      <div class="">
         <span class="text-danger ">Document Url:</span>
         <a
           href="{{ this.documentHref }}"
           target="_blank"
-          class="overflow-hidden"
+          class=" document-url "
         >
-          {{ meeting.documentUrl }}</a
-        >
+          See Document <i class="pi pi-external-link"></i>
+        </a>
       </div>
     </div>
+    <div class="d-flex flex-column flex-md-row align-items-center w-100">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Modify"
+        class="p-button-success w-50"
+        [raised]="true"
+        [rounded]="true"
+        severity="success"
+        routerLink="/dashboard/modify/{{ this.meeting.id }}"
+      ></button>
 
-    <button
-      pButton
-      pRipple
-      type="button"
-      label="Modify"
-      class="p-button-success w-50"
-      [raised]="true"
-      [rounded]="true"
-      severity="success"
-      routerLink="/dashboard/modify/{{ this.meeting.id }}"
-    ></button>
-
-    <button
-      pButton
-      pRipple
-      type="button"
-      label="Delete"
-      class="p-button-success w-50"
-      [raised]="true"
-      [rounded]="true"
-      severity="danger"
-      (click)="deleteMeeting(meeting.id)"
-    ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Delete"
+        class="p-button-success w-50"
+        [raised]="true"
+        [rounded]="true"
+        severity="danger"
+        (click)="deleteMeeting(meeting.id)"
+      ></button>
+    </div>
   </li>`,
   styleUrl: './meeting-item.component.scss',
+  styles: [
+    `
+      .document-url {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    `,
+  ],
 })
 export class MeetingItemComponent {
   @Input() meeting: Meeting;
