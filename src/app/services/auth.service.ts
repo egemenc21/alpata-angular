@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
+
 
 export interface User {
   id: string;
@@ -37,7 +38,7 @@ export interface RegistrationResponse {
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService {  
   private jwtToken;
   constructor(private httpClient: HttpClient) {}
 

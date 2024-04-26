@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -15,6 +15,7 @@ export interface Meeting {
   providedIn: 'root',
 })
 export class MeetingService {
+
   meetings: Meeting[];
   constructor(private httpClient: HttpClient) {}
 
