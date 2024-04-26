@@ -5,7 +5,7 @@ import { PasswordModule } from 'primeng/password';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 FormsModule;
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CustomPipe } from '../pipes/custom.pipe';
 import { AuthService } from '../services/auth.service';
@@ -22,6 +22,7 @@ import { UserService } from '../services/user.service';
     PasswordModule,
     FormsModule,
     CustomPipe,
+    RouterLink,
   ],
   template: `
     <section
@@ -68,6 +69,11 @@ import { UserService } from '../services/user.service';
           severity="success"
         ></button>
       </form>
+
+      <div>
+        <h4 class="mt-4">You don't have an account please register!</h4>
+        <p-button label="Register Page" severity="info" routerLink="/register"></p-button>
+      </div>
     </section>
   `,
   styleUrl: './sign-in.component.scss',

@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, runInInjectionContext } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  runInInjectionContext,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -34,7 +39,7 @@ import {
     style="height: 100vh;"
   >
     <h3 class="h4 text-center font-weight-bolder p-3">
-      Already have an account? Please sign in!
+      You don't have an account? Please Register!
     </h3>
 
     <form class="container" [formGroup]="applyForm" (submit)="submitForm()">
@@ -81,28 +86,28 @@ import {
 
       <label class="row justify-content-center align-content-center">
         <p-inputMask
+          ariaLabelledBy="phone"
           mask="(999) 999-9999"
           formControlName="phoneNumber"
           placeholder="(999) 999-9999"
         ></p-inputMask>
       </label>
 
-      <label class="row justify-content-center align-content-center">
-        <p-fileUpload
-          mode="basic"
-          chooseLabel="Choose"
-          name="demo[]"
-          accept="image/*"
-          maxFileSize="1000000"
-          (onSelect)="onUpload($event)"
-        ></p-fileUpload>
-      </label>
+      <p-fileUpload
+        mode="basic"
+        chooseLabel="Choose"
+        name="demo[]"
+        accept="image/*"
+        maxFileSize="1000000"
+        (onSelect)="onSelect($event)"
+        styleClass="mb-2"
+      ></p-fileUpload>
 
       <button
         pButton
         pRipple
         type="submit"
-        label="Sign in"
+        label="Register"
         class="p-button-success w-50 col-lg-2"
         [raised]="true"
         [rounded]="true"
@@ -116,49 +121,52 @@ export class RegisterComponent {
   authService = inject(AuthService);
   registrationSucceeded = false;
   registrationResponse: RegistrationResponse = {
-    succeeded:false,
-    message: ''
-  }
-  constructor(private router: Router,private changeDetectorRef: ChangeDetectorRef) {}
+    succeeded: false,
+    message: '',
+  };
+  constructor(private router: Router) {}
 
   applyForm = new FormGroup({
-    name: new FormControl(),
-    surname: new FormControl(),
-    email: new FormControl(),
-    password: new FormControl(),
-    phoneNumber: new FormControl(),
+    name: new FormControl('', [Validators.required]),
+    surname: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+    phoneNumber: new FormControl('', [Validators.required]),
     file: new FormControl(null, [Validators.required]),
   });
 
   ngDoCheck() {
-    console.log(this.authService.getAuthToken())
-    if(this.registrationResponse.succeeded) this.router.navigate(['/dashboard']);
+    if (this.registrationResponse.succeeded)
+      this.router.navigate(['/dashboard']);
+
+    console.log(this.applyForm.valid);
+    console.log(this.applyForm.value);
   }
 
-  onUpload($event: FileSelectEvent) {
-    console.log($event);
-
+  onSelect($event: FileSelectEvent) {
+    
     const file = $event.files[0];
     if (file) {
-      this.applyForm.value.file = file;
+      this.applyForm.patchValue({ file: file });
     }
-
-    console.log(this.applyForm.value);
   }
 
   submitForm = async () => {
     try {
       const data = await this.authService.toFormData(this.applyForm.value);
       this.authService.register(data).subscribe({
-        next: (res) => {         
-          this.registrationResponse = res  
+        next: (res) => {
+          this.registrationResponse = res;
           console.log(this.registrationResponse);
         },
         error: (err) => {
           console.error(err);
         },
       });
-      console.log(this.registrationResponse )
+      console.log(this.registrationResponse);
     } catch (error) {
       console.log(error);
     }
