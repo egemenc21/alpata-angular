@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 export interface User {
   id: string;
@@ -37,8 +38,6 @@ export interface RegistrationResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly url = 'http://localhost:5008';
-
   private jwtToken;
   constructor(private httpClient: HttpClient) {}
 
@@ -51,7 +50,7 @@ export class AuthService {
   }
 
   signIn(email: string, password: string): Observable<JwtUser> {
-    return this.httpClient.post<JwtUser>(`${this.url}/api/User/login`, {
+    return this.httpClient.post<JwtUser>(`${environment.apiRoute}/api/User/login`, {
       email,
       password,
     });
@@ -59,7 +58,7 @@ export class AuthService {
 
   register(registerData: FormData): Observable<RegistrationResponse> {
     return this.httpClient.post<RegistrationResponse>(
-      `${this.url}/api/User/register`,
+      `${environment.apiRoute}/api/User/register`,
       registerData
     );
   }
