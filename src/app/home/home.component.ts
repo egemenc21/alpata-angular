@@ -48,6 +48,7 @@ export class HomeComponent {
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
+    console.log(token)
     if (!token) {
       this.router.navigate(['/']);
       return;
@@ -70,7 +71,8 @@ export class HomeComponent {
 
     this.authService.setAuthToken(token);
     this.userService.userId = userId;
-    this.fetchUserById(userId);
+    if(this.authService.getAuthToken())
+       this.fetchUserById(userId);
   }
 
   private getUserIdFromToken(token: string): string | null {
