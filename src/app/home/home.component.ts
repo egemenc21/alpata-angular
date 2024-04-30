@@ -48,7 +48,7 @@ export class HomeComponent {
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-    console.log(token)
+    console.log(token);
     if (!token) {
       this.router.navigate(['/']);
       return;
@@ -71,8 +71,7 @@ export class HomeComponent {
 
     this.authService.setAuthToken(token);
     this.userService.userId = userId;
-    if(this.authService.getAuthToken())
-       this.fetchUserById(userId);
+    if (this.authService.getAuthToken()) this.fetchUserById(userId);
   }
 
   private getUserIdFromToken(token: string): string | null {
@@ -85,13 +84,21 @@ export class HomeComponent {
     }
   }
 
-  fetchUserById(id: string) {
-    this.userService.getUserById(id).subscribe({
-      next: (res) => {
-        this.user = res;
-        this.imageUrl = `${environment.apiRoute}/Uploads/Files/${this.user.profilePictureUrl}`;
-      },
-      error: (err) => console.error('Error fetching user:', err),
-    });
+  async fetchUserById(id: string) {
+    try {
+      const user = await this.userService.getUserById(id);
+      this.user = user;
+      this.imageUrl = `${environment.apiRoute}/Uploads/Files/${user.profilePictureUrl}`;
+    } catch (error) {
+      console.log(error);
+    }
+
+    // this.userService.getUserById(id).subscribe({
+    //   next: (res) => {
+    //     this.user = res;
+    //     this.imageUrl =
+    //   },
+    //   error: (err) => console.error('Error fetching user:', err),
+    // });
   }
 }
