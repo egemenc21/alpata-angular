@@ -4,7 +4,6 @@ import { Meeting, MeetingService } from '../services/meeting.service';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../environments/environment.development';
 import { RouterLink } from '@angular/router';
-import { PrimeIcons } from 'primeng/api';
 
 @Component({
   selector: 'app-meeting-item',
@@ -12,7 +11,7 @@ import { PrimeIcons } from 'primeng/api';
   imports: [CommonModule, ButtonModule, RouterLink],
   template: `<li
     *ngIf="meeting"
-    class="border p-4 rounded-lg d-flex flex-column align-items-center h-100 w-100 "
+    class="border p-3 rounded-lg d-flex flex-column align-items-center h-100 w-100 "
   >
     <div class="p-2">
       <h3 class="text-center h5">{{ meeting.name | uppercase }}</h3>
@@ -32,6 +31,7 @@ import { PrimeIcons } from 'primeng/api';
           href="{{ this.documentHref }}"
           target="_blank"
           class=" document-url "
+          *ngIf="this.meeting.documentUrl !== '' "
         >
           See Document <i class="pi pi-external-link"></i>
         </a>
@@ -79,7 +79,10 @@ export class MeetingItemComponent {
 
   meetingService = inject(MeetingService);
   documentHref: string;
-  constructor() {}
+  constructor() {
+    
+  }
+
 
   ngOnInit() {
     this.documentHref = `${environment.apiRoute}/Uploads/Documents/${this.meeting.documentUrl}`;
