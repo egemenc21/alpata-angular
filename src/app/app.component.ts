@@ -9,7 +9,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   imports: [RouterOutlet, RouterLinkActive, RouterLink],
   template: `
     <main class=" " style="height: 100vh;">
-      <section> 
+      <section class="w-100 h-100"> 
 
         <!-- The routed views render in the <router-outlet>-->
         <router-outlet></router-outlet>

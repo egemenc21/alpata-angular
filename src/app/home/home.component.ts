@@ -8,7 +8,13 @@ import { environment } from '../../environments/environment.development';
 import { ImageModule } from 'primeng/image';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { MeetingComponent } from '../meeting/meeting.component';
-import { CustomToasterService, MessageType, PositionType } from '../services/ui/custom-toaster.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {
+  CustomToasterService,
+  MessageType,
+  PositionType,
+} from '../services/ui/custom-toaster.service';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-home',
@@ -19,19 +25,16 @@ import { CustomToasterService, MessageType, PositionType } from '../services/ui/
     NavigationComponent,
     MeetingComponent,
     RouterOutlet,
+    SpinnerComponent,
   ],
   template: `
+    @if(user){
     <app-navigation [user]="user" [imageUrl]="imageUrl"></app-navigation>
     <section>
       <router-outlet></router-outlet>
     </section>
-    <!-- <div>
-      <ul>
-        <li *ngFor="let key of getObjectKeys(user)">
-          <strong>{{ key }}:</strong> {{ user[key] }}
-        </li>
-      </ul>
-    </div> -->
+    }
+    <app-spinner *ngIf="user == undefined"></app-spinner>
   `,
   styleUrl: './home.component.scss',
 })
@@ -46,27 +49,31 @@ export class HomeComponent {
   }
 
   constructor(private router: Router, private toastr: CustomToasterService) {
-    this.toastr.sendNotification("User login is successful", "Welcome", MessageType.Success, PositionType.TopRight);
+    this.toastr.sendNotification(
+      'User login is successful',
+      'Welcome',
+      MessageType.Success,
+      PositionType.TopRight
+    );
   }
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-    console.log(token);
     if (!token) {
       this.router.navigate(['/']);
       return;
-    }    
+    }
 
     const decodedToken = jwtDecode(token);
     const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+
     if (decodedToken.exp < currentTime) {
-      console.log('Token is expired');
       localStorage.removeItem('token');
       this.router.navigate(['/']);
       return;
     }
 
-    const userId = this.getUserIdFromToken(token);
+    const userId = this.userService.getUserIdFromToken(token);
     if (!userId) {
       this.router.navigate(['/']);
       return;
@@ -75,16 +82,6 @@ export class HomeComponent {
     this.authService.setAuthToken(token);
     this.userService.userId = userId;
     if (this.authService.getAuthToken()) this.fetchUserById(userId);
-  }
-
-  private getUserIdFromToken(token: string): string | null {
-    try {
-      const decodedToken = jwtDecode(token);
-      return decodedToken.sub;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
-    }
   }
 
   async fetchUserById(id: string) {
