@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment.development';
 import { ImageModule } from 'primeng/image';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { MeetingComponent } from '../meeting/meeting.component';
+import { CustomToasterService, MessageType, PositionType } from '../services/ui/custom-toaster.service';
 
 @Component({
   selector: 'app-home',
@@ -44,7 +45,9 @@ export class HomeComponent {
     return Object.keys(obj);
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private toastr: CustomToasterService) {
+    this.toastr.sendNotification("User login is successful", "Welcome", MessageType.Success, PositionType.TopRight);
+  }
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -52,7 +55,7 @@ export class HomeComponent {
     if (!token) {
       this.router.navigate(['/']);
       return;
-    }
+    }    
 
     const decodedToken = jwtDecode(token);
     const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
@@ -92,13 +95,5 @@ export class HomeComponent {
     } catch (error) {
       console.log(error);
     }
-
-    // this.userService.getUserById(id).subscribe({
-    //   next: (res) => {
-    //     this.user = res;
-    //     this.imageUrl =
-    //   },
-    //   error: (err) => console.error('Error fetching user:', err),
-    // });
   }
 }
