@@ -153,16 +153,7 @@ export class ModifyMeetingComponent {
           this.router.navigate(['dashboard'])
         },
         error: (err) => {
-          console.error('Error creating meeting:', err);
-          if (err.status === 400) {
-            const validationErrors = err.error;
-            // Iterate over the validationErrors object and display each error message
-            Object.keys(validationErrors).forEach((key) => {
-              const errorMessage = validationErrors[key];
-              console.error(`Validation error for ${key}: ${errorMessage}`);
-              // You can display the error messages to the user here
-            });
-          }
+          console.error('Error modifying meeting:', err);
         },
       });
   }

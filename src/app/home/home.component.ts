@@ -49,12 +49,7 @@ export class HomeComponent {
   }
 
   constructor(private router: Router, private toastr: CustomToasterService) {
-    this.toastr.sendNotification(
-      'User login is successful',
-      'Welcome',
-      MessageType.Success,
-      PositionType.TopRight
-    );
+
   }
 
   ngOnInit(): void {
@@ -82,6 +77,13 @@ export class HomeComponent {
     this.authService.setAuthToken(token);
     this.userService.userId = userId;
     if (this.authService.getAuthToken()) this.fetchUserById(userId);
+
+    this.toastr.sendNotification(
+      'User login is successful',
+      'Welcome',
+      MessageType.Success,
+      PositionType.TopRight
+    );
   }
 
   async fetchUserById(id: string) {

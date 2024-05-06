@@ -15,7 +15,6 @@ export interface Meeting {
   providedIn: 'root',
 })
 export class MeetingService {
-
   meetings: Meeting[];
   constructor(private httpClient: HttpClient) {}
 
@@ -36,9 +35,12 @@ export class MeetingService {
     );
   }
 
-  updateMeeting(meetingToBeUpdated:FormData, meetingId:string){
-    return this.httpClient.put(`${environment.apiRoute}/api/Meeting/${meetingId}`, meetingToBeUpdated)
-  } 
+  updateMeeting(meetingToBeUpdated: FormData, meetingId: string) {
+    return this.httpClient.put(
+      `${environment.apiRoute}/api/Meeting/${meetingId}`,
+      meetingToBeUpdated
+    );
+  }
 
   createMeeting(
     newMeeting: FormData,
@@ -67,4 +69,13 @@ export class MeetingService {
     return formData;
   }
 
+  sortMeetingsByStartDate(meetings: Meeting[]): Meeting[] {
+    const currentTime = new Date().getTime();
+
+    return meetings.sort((a, b) => {
+      const diffA = Math.abs(new Date(a.startDate).getTime() - currentTime);
+      const diffB = Math.abs(new Date(b.startDate).getTime() - currentTime);
+      return diffA - diffB;
+    });
+  }
 }

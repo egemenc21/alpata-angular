@@ -51,6 +51,7 @@ import { CalendarModule } from 'primeng/calendar';
             formControlName="startDate"
             required
             placeholder="Start Date"
+            [showTime]="true"
           ></p-calendar>
         </label>
         <label class="p-2">
@@ -58,17 +59,16 @@ import { CalendarModule } from 'primeng/calendar';
             formControlName="endDate"
             required
             placeholder="End Date"
+            [showTime]="true"
           ></p-calendar>
         </label>
         <label class="p-2 ">
-          <input
-            type="text"
-            pInputText
+          <textarea
+            rows="5"
+            cols="30"
+            pInputTextarea
             formControlName="description"
-            placeholder="Meeting Description"
-            class=""
-            required
-          />
+          ></textarea>
         </label>
 
         <label class="row ">
@@ -100,6 +100,7 @@ import { CalendarModule } from 'primeng/calendar';
         <app-meeting-item
           [meeting]="meeting"
           (meetingDeleted)="onMeetingDeleted($event)"
+          (meetingUpdated)="onMeetingUpdated()"
           class="col-md-6 col-lg-4 my-2 "
         ></app-meeting-item>
         } }
@@ -132,15 +133,16 @@ export class MeetingComponent {
     this.meetingService.updateMeetings(this.meetings);
   }
 
-  onSelect($event: FileSelectEvent) {
-    console.log($event);
+  onMeetingUpdated() {
+    this.fetchMeetings();
+    this.meetingService.updateMeetings(this.meetings);
+  }
 
+  onSelect($event: FileSelectEvent) {
     const file = $event.files[0];
     if (file) {
       this.form.value.document = file;
     }
-
-    console.log(this.form.value);
   }
 
   async onSubmit() {
@@ -164,16 +166,6 @@ export class MeetingComponent {
         },
         error: (err) => {
           console.error('Error creating meeting:', err);
-          if (err.status === 422) {
-            const validationErrors = err.error;
-            // Iterate over the validationErrors object and display each error message
-            Object.keys(validationErrors).forEach((key) => {
-              const errorMessage = validationErrors[key];
-              console.error(`Validation error for ${key}: ${errorMessage}`);
-              // You can display the error messages to the user here
-            });
-          }
-          // Handle other errors
         },
       });
     this.form.reset();
@@ -185,8 +177,8 @@ export class MeetingComponent {
       .fetchMeetingsByUserId(this.userService.userId)
       .subscribe({
         next: (res) => {
-          this.meetings = res.sort(m => parseInt(m.id) );
-          this.meetingService.meetings = res.sort(m => parseInt(m.id) );
+          this.meetings = this.meetingService.sortMeetingsByStartDate(res);
+          this.meetingService.meetings = this.meetingService.sortMeetingsByStartDate(res);
         },
         error: (err) => console.log(err),
       });
