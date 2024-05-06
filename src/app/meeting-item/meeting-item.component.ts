@@ -166,7 +166,7 @@ export class MeetingItemComponent {
 
   @Input() meeting: Meeting;
   @Output() meetingDeleted = new EventEmitter<string>();
-  @Output() meetingUpdated = new EventEmitter<string>();
+  @Output() meetingUpdated = new EventEmitter();
   datePipe = inject(DatePipe);
 
   meetingService = inject(MeetingService);

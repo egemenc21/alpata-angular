@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
 import { CalendarModule } from 'primeng/calendar';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-meeting',
@@ -27,6 +28,7 @@ import { CalendarModule } from 'primeng/calendar';
     FileUploadModule,
     CalendarModule,
     DatePipe,
+    SpinnerComponent,
   ],
   template: `
     <section>
@@ -68,6 +70,7 @@ import { CalendarModule } from 'primeng/calendar';
             cols="30"
             pInputTextarea
             formControlName="description"
+            required
           ></textarea>
         </label>
 
@@ -92,11 +95,16 @@ import { CalendarModule } from 'primeng/calendar';
           [raised]="true"
           [rounded]="true"
           severity="success"
+          [disabled]="!isFormValid()" 
         ></button>
       </form>
+      <div class="h-50">
+        <app-spinner *ngIf="isSpinning"></app-spinner>
+      </div>
 
       <ul class="container d-flex flex-row flex-wrap  mt-4">
-        @if (meetings) { @for (meeting of meetings; track meeting.id) {
+        @if (meetings && isSpinning === false) { @for (meeting of meetings;
+        track meeting.id) {
         <app-meeting-item
           [meeting]="meeting"
           (meetingDeleted)="onMeetingDeleted($event)"
@@ -112,6 +120,7 @@ import { CalendarModule } from 'primeng/calendar';
 export class MeetingComponent {
   @ViewChild('upload') fileUploadButton;
   meetingService = inject(MeetingService);
+  isSpinning: boolean = true;
   userService = inject(UserService);
   datePipe = inject(DatePipe);
   meetings: Meeting[];
@@ -121,7 +130,7 @@ export class MeetingComponent {
     startDate: new FormControl('', Validators.required),
     endDate: new FormControl('', Validators.required),
     description: new FormControl('', Validators.required),
-    document: new FormControl(null, Validators.required),
+    document: new FormControl(null),
   });
 
   ngOnInit() {
@@ -144,8 +153,13 @@ export class MeetingComponent {
       this.form.value.document = file;
     }
   }
+  isFormValid(): boolean {
+    return this.form.valid;
+  }
+  
 
   async onSubmit() {
+    this.isSpinning = true;
     const formValue = this.form.value;
     formValue.startDate = this.datePipe.transform(
       formValue.startDate,
@@ -163,6 +177,7 @@ export class MeetingComponent {
         next: (res) => {
           console.log('Meeting created successfully:', res);
           this.fetchMeetings();
+          this.isSpinning = false;
         },
         error: (err) => {
           console.error('Error creating meeting:', err);
@@ -178,7 +193,10 @@ export class MeetingComponent {
       .subscribe({
         next: (res) => {
           this.meetings = this.meetingService.sortMeetingsByStartDate(res);
-          this.meetingService.meetings = this.meetingService.sortMeetingsByStartDate(res);
+          this.meetingService.meetings =
+            this.meetingService.sortMeetingsByStartDate(res);
+
+          this.isSpinning = false;
         },
         error: (err) => console.log(err),
       });
