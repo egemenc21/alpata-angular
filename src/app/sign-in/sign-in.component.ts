@@ -11,6 +11,9 @@ import { CustomPipe } from '../pipes/custom.pipe';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 
+
+//global exception handler
+
 @Component({
   selector: 'app-sign-in',
   standalone: true,
